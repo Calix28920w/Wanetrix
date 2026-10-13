@@ -1,0 +1,656 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>WaneTrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap">
+<style>
+/* Layout: editorial single column on cream. Hero is text left, drawn thumbnail/analytics composition right. Sections alternate cream and tint; contact closes on ink. */
+:root {
+  --bg: #faf9f6;
+  --tint: #f3f1ec;
+  --card: #fffefb;
+  --ink: #1a1a18;
+  --muted: #66665e;
+  --border: #e2e0d9;
+  --accent: #c2562f;
+  --accent-soft: rgba(194, 86, 47, .14);
+  --foot-bg: #1a1a18;
+  --foot-fg: #faf9f6;
+  --foot-muted: rgba(250, 249, 246, .55);
+  --serif: "DM Serif Display", Georgia, serif;
+  --sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gutter: clamp(16px, 5vw, 64px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141412; --tint: #1a1a17; --card: #1d1d19; --ink: #f1efe9; --muted: #a09f94; --border: #2e2d28;
+    --accent: #e2805a; --accent-soft: rgba(226, 128, 90, .16);
+    --foot-bg: #0e0e0c; --foot-fg: #f1efe9; --foot-muted: rgba(241, 239, 233, .55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141412; --tint: #1a1a17; --card: #1d1d19; --ink: #f1efe9; --muted: #a09f94; --border: #2e2d28;
+  --accent: #e2805a; --accent-soft: rgba(226, 128, 90, .16);
+  --foot-bg: #0e0e0c; --foot-fg: #f1efe9; --foot-muted: rgba(241, 239, 233, .55);
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); font-size: 16.5px; line-height: 1.7;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+h1, h2, h3 { text-wrap: balance; font-weight: 400; margin: 0; }
+svg { display: block; max-width: 100%; height: auto; }
+
+/* shared svg paint classes */
+.s-ink { fill: var(--ink); } .s-bg { fill: var(--bg); } .s-card { fill: var(--card); } .s-tint { fill: var(--tint); }
+.s-accent { fill: var(--accent); } .s-soft { fill: var(--accent-soft); } .s-muted { fill: var(--muted); } .s-border { fill: var(--border); }
+.l-ink { stroke: var(--ink); } .l-accent { stroke: var(--accent); } .l-border { stroke: var(--border); } .l-muted { stroke: var(--muted); }
+.t { font-family: var(--sans); fill: var(--muted); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+.t-ink { fill: var(--ink); } .t-bg { fill: var(--bg); } .t-accent { fill: var(--accent); }
+.t-serif { font-family: var(--serif); text-transform: none; letter-spacing: 0; }
+
+/* nav */
+nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 24px;
+  padding: 14px var(--gutter);
+  background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: var(--serif); font-size: 1.15rem; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+.nav-links { display: flex; flex-wrap: wrap; gap: 4px 22px; list-style: none; margin: 0; padding: 0; }
+.nav-links a { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; color: var(--muted); transition: color .2s; }
+.nav-links a:hover { color: var(--ink); }
+
+/* hero */
+.hero { position: relative; overflow: hidden; padding: 72px var(--gutter) 64px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 40px; align-items: center; }
+.hero-bg-text {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  font-family: var(--serif); font-style: italic; font-size: clamp(6rem, 20vw, 17rem); line-height: 1;
+  color: transparent; -webkit-text-stroke: 1px var(--border); white-space: nowrap; pointer-events: none; user-select: none; letter-spacing: -.03em;
+}
+.hero-copy, .hero-art { position: relative; min-width: 0; }
+.tag { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 0 0 18px; font-weight: 500; }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.7rem, 7vw, 5.4rem); line-height: 1.04; letter-spacing: -.02em; margin-bottom: 24px; }
+.hero h1 em, h2 em { font-style: italic; color: var(--accent); }
+.hero-sub { max-width: 44ch; color: var(--muted); margin: 0 0 32px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-block; padding: 12px 26px; font: 500 .76rem var(--sans); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; border-radius: 2px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: background .2s, color .2s, border-color .2s, transform .15s; }
+.btn:hover { border-color: var(--ink); color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; transform: translateY(-1px); }
+.ring-spin { transform-origin: 50% 50%; transform-box: fill-box; animation: spin 90s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* sections */
+section { padding: 88px var(--gutter); }
+.label { display: flex; align-items: center; gap: 16px; margin: 0 0 40px; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.alt { background: var(--tint); }
+.inner { max-width: 1180px; margin-inline: auto; }
+
+/* stats */
+.stats { padding: 0 var(--gutter); }
+.stats-strip { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--border); }
+.stat { padding: 28px 24px 24px; border-right: 1px solid var(--border); min-width: 0; }
+.stat:first-child { padding-left: 0; }
+.stat:last-child { border-right: 0; }
+.stat-num { font-family: var(--serif); font-size: 2.6rem; line-height: 1; margin-bottom: 6px; }
+.stat-num em { font-style: italic; color: var(--accent); }
+.stat-label { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.stat svg { width: 100%; max-width: 150px; }
+
+/* services */
+.services { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.service { background: var(--tint); padding: 30px 28px; transition: background .2s; min-width: 0; }
+.service:hover { background: var(--card); }
+.service .ico { width: 52px; height: 52px; color: var(--accent); margin-bottom: 18px; }
+.service .num { font-family: var(--serif); font-style: italic; font-size: .85rem; color: var(--accent); margin-bottom: 4px; }
+.service h3 { font-family: var(--serif); font-size: 1.32rem; line-height: 1.2; margin-bottom: 10px; }
+.service p { margin: 0; font-size: .9rem; color: var(--muted); }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tool { padding: 5px 14px; border: 1px solid var(--border); font-size: .76rem; letter-spacing: .05em; color: var(--muted); border-radius: 2px; background: var(--bg); }
+
+/* gallery */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.filter { padding: 7px 16px; border: 1px solid var(--border); background: transparent; font: 500 .72rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border-radius: 2px; cursor: pointer; transition: all .18s; }
+.filter:hover { border-color: var(--ink); color: var(--ink); }
+.filter[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.gnote { font-size: .82rem; color: var(--muted); margin: 0 0 28px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 24px; }
+.g-thumb { aspect-ratio: 16 / 9; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; background: var(--tint); }
+.g-thumb svg { width: 100%; height: 100%; transition: transform .45s cubic-bezier(.25, .46, .45, .94); }
+.g-item:hover .g-thumb svg { transform: scale(1.04); }
+.g-title { font-size: .9rem; margin: 10px 0 2px; line-height: 1.35; }
+.g-cat { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+/* proof */
+.proofs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.proof { background: var(--card); border: 1px solid var(--border); border-radius: 3px; overflow: hidden; min-width: 0; }
+.proof-fig { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--border); background: var(--bg); }
+.proof-fig svg { width: 100%; height: 100%; }
+.proof-body { padding: 18px 20px 22px; }
+.proof-stat { font-family: var(--serif); font-size: 1.7rem; line-height: 1; margin-bottom: 6px; }
+.proof-stat em { font-style: italic; color: var(--accent); }
+.proof-label { font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.proof-body p { margin: 0; font-size: .86rem; color: var(--muted); }
+
+/* experience */
+.exp { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 3fr); gap: 0 28px; }
+.exp-date { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 40px 0 0; }
+.exp-rail { position: relative; }
+.exp-rail::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.exp-rail i { position: absolute; left: 50%; top: 44px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); transform: translateX(-50%); }
+.exp-body { padding: 36px 0 40px; min-width: 0; }
+.exp-role { font-family: var(--serif); font-size: 1.28rem; line-height: 1.25; margin-bottom: 4px; }
+.exp-co { font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+.exp-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.exp-body li { position: relative; padding-left: 20px; font-size: .92rem; color: var(--muted); }
+.exp-body li::before { content: ""; position: absolute; left: 0; top: .78em; width: 10px; height: 1px; background: var(--accent); }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 72px; align-items: start; }
+.about h2 { font-family: var(--serif); font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.12; letter-spacing: -.02em; margin-bottom: 24px; }
+.about p { color: var(--muted); margin: 0 0 18px; max-width: 58ch; }
+.edu { border-left: 2px solid var(--accent); padding-left: 20px; margin-top: 32px; }
+.edu b { display: block; font: 400 1.05rem var(--serif); }
+.edu span { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.plot { background: var(--card); border: 1px solid var(--border); border-radius: 3px; margin-bottom: 24px; }
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.skills div { background: var(--bg); padding: 14px 18px; font-size: .84rem; }
+
+/* contact */
+#contact { position: relative; overflow: hidden; text-align: center; background: var(--foot-bg); color: var(--foot-fg); }
+#contact .label { color: var(--foot-muted); }
+#contact .label::after { background: rgba(250, 249, 246, .14); }
+#contact .inner { position: relative; }
+.c-art { position: absolute; right: -120px; bottom: -160px; width: 520px; opacity: .9; pointer-events: none; }
+.c-art circle { fill: none; stroke: rgba(250, 249, 246, .12); }
+#contact h2 { font-family: var(--serif); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.05; letter-spacing: -.02em; margin-bottom: 20px; }
+.c-sub { color: var(--foot-muted); max-width: 38ch; margin: 0 auto 32px; }
+.c-rows { display: grid; gap: 14px; justify-items: center; }
+.c-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px 14px; }
+.c-link { font-family: var(--serif); font-style: italic; font-size: 1.3rem; text-decoration: none; border-bottom: 1px solid rgba(250, 249, 246, .25); padding-bottom: 2px; overflow-wrap: anywhere; transition: color .2s, border-color .2s; }
+.c-link:hover { color: var(--accent); border-color: var(--accent); }
+.copy { background: transparent; color: var(--foot-muted); border: 1px solid rgba(250, 249, 246, .22); padding: 6px 14px; border-radius: 2px; font: 500 .68rem var(--sans); letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s; }
+.copy:hover { color: var(--foot-fg); border-color: var(--foot-fg); }
+.c-meta { margin-top: 36px; font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; color: var(--foot-muted); }
+footer { background: var(--foot-bg); border-top: 1px solid rgba(250, 249, 246, .08); padding: 28px var(--gutter); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; color: var(--foot-muted); font-size: .72rem; letter-spacing: .08em; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding-top: 48px; }
+  .hero-art { max-width: 560px; }
+  .stats-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat:nth-child(2) { border-right: 0; }
+  .stat:nth-child(3) { padding-left: 0; }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--border); }
+  .about { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .exp { grid-template-columns: 28px minmax(0, 1fr); gap: 0 16px; }
+  .exp-date { grid-column: 2; padding: 32px 0 0; }
+  .exp-rail { grid-column: 1; grid-row: 1 / span 2; }
+  .exp-body { grid-column: 2; padding-top: 6px; }
+  .exp-rail i { top: 36px; }
+  section { padding-block: 64px; }
+}
+@media (max-width: 480px) {
+  .stat { padding-inline: 14px; }
+  .stat-num { font-size: 2.1rem; }
+  .skills { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .ring-spin { animation: none; }
+  * { transition: none !important; }
+}
+</style>
+
+<nav aria-label="Primary">
+  <a class="logo" href="#home">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="6" class="s-ink"/><path d="M6 8l3.2 10L13 10l3.8 8L20 8" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    WaneTrix
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+  <header class="hero" id="home">
+    <div class="hero-bg-text" aria-hidden="true">Creative</div>
+    <div class="hero-copy">
+      <p class="tag">Available for remote roles &amp; freelance</p>
+      <h1>Strategy. Design. <em>Growth.</em></h1>
+      <p class="hero-sub">Creative Strategist and YouTube Growth Specialist based in Manila. I scale channels through thumbnail strategy, AI-powered workflows, and data-driven creative direction.</p>
+      <div class="actions">
+        <a class="btn primary" href="#services">See What I Do</a>
+        <a class="btn" href="#contact">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <svg viewBox="0 0 560 490" role="img" aria-label="Illustration of stacked video thumbnails with a click-through-rate gauge reading 30 percent plus and a rising views chart">
+        <circle cx="330" cy="225" r="200" class="s-soft"/>
+        <circle cx="330" cy="225" r="158" fill="none" class="l-border" stroke-width="1" stroke-dasharray="3 7"/>
+        <g class="ring-spin"><circle cx="330" cy="225" r="212" fill="none" class="l-accent" stroke-width="1" stroke-dasharray="2 14" opacity=".6"/></g>
+
+        <g transform="rotate(-8 270 140)">
+          <rect x="130" y="52" width="280" height="158" rx="8" class="s-card l-border" stroke-width="1"/>
+          <rect x="146" y="68" width="76" height="8" rx="4" class="s-border"/>
+          <rect x="146" y="84" width="120" height="8" rx="4" class="s-border"/>
+        </g>
+        <g transform="rotate(5 330 190)">
+          <rect x="190" y="112" width="280" height="158" rx="8" class="s-tint l-border" stroke-width="1"/>
+          <polygon points="190,270 262,176 308,228 352,160 470,270" class="s-soft"/>
+          <polygon points="352,160 336,182 352,174 366,184" class="s-card"/>
+          <circle cx="428" cy="148" r="14" class="s-accent" opacity=".85"/>
+        </g>
+        <g>
+          <rect x="90" y="192" width="300" height="169" rx="8" class="s-ink"/>
+          <rect x="90" y="192" width="300" height="169" rx="8" fill="none" class="l-accent" stroke-width="1" opacity=".5"/>
+          <text x="112" y="304" class="t-serif t-bg" style="font-family:var(--serif);font-size:74px;fill:var(--bg)">1M+</text>
+          <text x="114" y="332" class="t t-bg" style="fill:var(--bg);opacity:.7">views on a single video</text>
+          <circle cx="322" cy="246" r="44" class="s-accent"/>
+          <polygon points="312,228 312,264 342,246" fill="#fff"/>
+          <rect x="112" y="216" width="46" height="6" rx="3" class="s-accent"/>
+        </g>
+
+        <g>
+          <rect x="330" y="296" width="200" height="140" rx="10" class="s-card l-border" stroke-width="1"/>
+          <path d="M378 392 A52 52 0 0 1 482 392" pathLength="100" fill="none" class="l-border" stroke-width="11" stroke-linecap="round"/>
+          <path d="M378 392 A52 52 0 0 1 482 392" pathLength="100" fill="none" class="l-accent" stroke-width="11" stroke-linecap="round" stroke-dasharray="75 100"/>
+          <text x="430" y="388" text-anchor="middle" class="t-serif t-ink" style="font-family:var(--serif);font-size:28px;fill:var(--ink)">30%+</text>
+          <text x="430" y="418" text-anchor="middle" class="t">Peak CTR</text>
+          <text x="378" y="410" text-anchor="middle" class="t" style="font-size:8px">0</text>
+          <text x="482" y="410" text-anchor="middle" class="t" style="font-size:8px">40</text>
+        </g>
+
+        <g>
+          <rect x="20" y="368" width="270" height="108" rx="10" class="s-card l-border" stroke-width="1"/>
+          <line x1="36" y1="418" x2="274" y2="418" class="l-border" stroke-width="1" stroke-dasharray="2 4"/>
+          <line x1="36" y1="440" x2="274" y2="440" class="l-border" stroke-width="1" stroke-dasharray="2 4"/>
+          <path d="M36 456 L80 448 L120 452 L160 432 L200 424 L240 406 L274 392 L274 460 L36 460 Z" class="s-soft"/>
+          <polyline points="36,456 80,448 120,452 160,432 200,424 240,406 274,392" fill="none" class="l-accent" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="274" cy="392" r="5" class="s-accent"/>
+          <text x="36" y="392" class="t">Views per video</text>
+        </g>
+      </svg>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stats-strip">
+      <div class="stat">
+        <div class="stat-num"><em>1M+</em></div>
+        <div class="stat-label">Views per video (multiple)</div>
+        <svg viewBox="0 0 150 34" aria-hidden="true"><polyline points="2,30 30,26 56,28 84,18 112,12 146,3" fill="none" class="l-accent" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="146" cy="3" r="3" class="s-accent"/></svg>
+      </div>
+      <div class="stat">
+        <div class="stat-num">10–15<em>%</em></div>
+        <div class="stat-label">Sustained CTR (peak 30%+)</div>
+        <svg viewBox="0 0 150 34" aria-hidden="true"><rect x="2" y="14" width="146" height="6" rx="3" class="s-border"/><rect x="2" y="10" width="50" height="14" rx="4" class="s-soft l-accent" stroke-width="1"/><circle cx="112" cy="17" r="5" class="s-accent"/></svg>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100<em>K+</em></div>
+        <div class="stat-label">Videos past 100K views</div>
+        <svg viewBox="0 0 150 34" aria-hidden="true"><rect x="2" y="22" width="14" height="10" class="s-border"/><rect x="24" y="18" width="14" height="14" class="s-border"/><rect x="46" y="14" width="14" height="18" class="s-border"/><rect x="68" y="10" width="14" height="22" class="s-border"/><rect x="90" y="6" width="14" height="26" class="s-accent" opacity=".6"/><rect x="112" y="2" width="14" height="30" class="s-accent"/></svg>
+      </div>
+      <div class="stat">
+        <div class="stat-num">200<em>K</em></div>
+        <div class="stat-label">Debut video views (solo channel)</div>
+        <svg viewBox="0 0 150 34" aria-hidden="true"><line x1="2" y1="30" x2="148" y2="30" class="l-border" stroke-width="1"/><circle cx="20" cy="30" r="3" class="s-muted"/><path d="M20 30 C50 30 60 4 100 4" fill="none" class="l-accent" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round"/><circle cx="100" cy="4" r="4" class="s-accent"/><text x="110" y="9" class="t" style="font-size:8px">Debut</text></svg>
+      </div>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="inner">
+      <p class="label">Services &amp; Expertise</p>
+      <div class="services">
+        <div class="service">
+          <svg class="ico" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 44h40"/><path d="M8 36l11-11 8 7 17-18"/><path d="M33 14h11v11"/><circle cx="19" cy="25" r="2"/></svg>
+          <div class="num">01</div>
+          <h3>YouTube Growth Strategy</h3>
+          <p>CTR optimization, outlier analysis, packaging strategy, A/B thumbnail testing, SEO, and channel growth frameworks that consistently outperform platform benchmarks.</p>
+        </div>
+        <div class="service">
+          <svg class="ico" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="42" height="28" rx="3"/><path d="M5 32l12-10 10 8 8-6 12 9"/><circle cx="36" cy="19" r="3"/><path d="M14 44h24"/></svg>
+          <div class="num">02</div>
+          <h3>Thumbnail &amp; Visual Design</h3>
+          <p>High-converting thumbnail systems built on audience psychology, competitor research, and iterative testing. Sustained 10–15% CTRs with peaks exceeding 30%.</p>
+        </div>
+        <div class="service">
+          <svg class="ico" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 6l4 12 12 4-12 4-4 12-4-12-12-4 12-4z"/><path d="M40 28l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="M40 4v6M37 7h6"/></svg>
+          <div class="num">03</div>
+          <h3>AI-Powered Creative Workflows</h3>
+          <p>Production pipelines integrating Midjourney, Leonardo AI, Flux, Ideogram, and Whisk with Adobe Photoshop, cutting turnaround time while maintaining premium quality.</p>
+        </div>
+        <div class="service">
+          <svg class="ico" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="22" r="13"/><rect x="26" y="20" width="20" height="20" rx="2"/><path d="M8 44l8-8"/><circle cx="20" cy="22" r="3"/></svg>
+          <div class="num">04</div>
+          <h3>Brand Identity &amp; Design</h3>
+          <p>Logo suites, typography systems, and visual guidelines for startups and creator brands. eBook design, book covers, EPUB layouts, and digital publications for content creators.</p>
+        </div>
+        <div class="service">
+          <svg class="ico" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6v40h40"/><rect x="13" y="28" width="7" height="14"/><rect x="24" y="20" width="7" height="22"/><rect x="35" y="12" width="7" height="30"/></svg>
+          <div class="num">05</div>
+          <h3>Analytics &amp; Audience Retention</h3>
+          <p>Deep performance analysis via YouTube Studio, Google Analytics, VidIQ, and TubeBuddy, translating data into design improvements that measurably lift CTR and watch time.</p>
+        </div>
+        <div class="service">
+          <svg class="ico" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="26" cy="9" r="5"/><circle cx="9" cy="40" r="5"/><circle cx="43" cy="40" r="5"/><path d="M23 13l-11 22M29 13l11 22M14 40h24"/></svg>
+          <div class="num">06</div>
+          <h3>Creative Ops &amp; Team Leadership</h3>
+          <p>Scalable operations built with Airtable, Make.com, and Zapier. Led and mentored designer teams across multiple companies, running QC reviews and codifying best practices.</p>
+        </div>
+      </div>
+      <p class="label" style="margin: 48px 0 0;">Tools &amp; Platforms</p>
+      <div class="tools" id="tools"></div>
+    </div>
+  </section>
+
+  <section id="portfolio" class="alt">
+    <div class="inner">
+      <p class="label">Portfolio — Thumbnails by Niche</p>
+      <div class="filters" id="filters" role="group" aria-label="Filter by niche"></div>
+      <p class="gnote">Illustrated sample concepts. Swap each one for a real thumbnail from your library.</p>
+      <div class="gallery" id="gallery"></div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="inner">
+      <p class="label">Proof of Results</p>
+      <div class="proofs">
+        <div class="proof">
+          <div class="proof-fig">
+            <svg viewBox="0 0 320 180" role="img" aria-label="Bar chart: debut video 200K views versus top videos past 1M views">
+              <text x="20" y="34" class="t">Debut video · solo channel</text>
+              <rect x="20" y="42" width="260" height="22" rx="3" class="s-border" opacity=".5"/>
+              <rect x="20" y="42" width="52" height="22" rx="3" class="s-muted" opacity=".75"/>
+              <text x="80" y="58" class="t t-ink" style="font-size:12px;letter-spacing:0">200K</text>
+              <text x="20" y="92" class="t">Top videos</text>
+              <rect x="20" y="100" width="260" height="22" rx="3" class="s-accent"/>
+              <text x="272" y="116" text-anchor="end" class="t t-bg" style="fill:#fff;font-size:12px;letter-spacing:0">1M+</text>
+              <path d="M286 104l12 7-12 7" fill="none" class="l-accent" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="20" y1="140" x2="280" y2="140" class="l-border" stroke-width="1"/>
+              <line x1="20" y1="136" x2="20" y2="144" class="l-muted" stroke-width="1"/><line x1="150" y1="136" x2="150" y2="144" class="l-muted" stroke-width="1"/><line x1="280" y1="136" x2="280" y2="144" class="l-muted" stroke-width="1"/>
+              <text x="20" y="160" text-anchor="middle" class="t" style="font-size:9px">0</text>
+              <text x="150" y="160" text-anchor="middle" class="t" style="font-size:9px">500K</text>
+              <text x="280" y="160" text-anchor="middle" class="t" style="font-size:9px">1M</text>
+            </svg>
+          </div>
+          <div class="proof-body">
+            <div class="proof-stat">200K <em>to</em> 1M+</div>
+            <div class="proof-label">Views per video</div>
+            <p>From a 200K debut on a solo channel to multiple videos past one million.</p>
+          </div>
+        </div>
+
+        <div class="proof">
+          <div class="proof-fig">
+            <svg viewBox="0 0 320 180" role="img" aria-label="Scale from 0 to 40 percent CTR with a sustained band at 10 to 15 percent and a peak marker at 30 percent plus">
+              <rect x="20" y="82" width="280" height="10" rx="5" class="s-border"/>
+              <rect x="90" y="74" width="35" height="26" rx="4" class="s-accent" opacity=".9"/>
+              <line x1="125" y1="87" x2="230" y2="87" class="l-accent" stroke-width="1.5" stroke-dasharray="3 5"/>
+              <circle cx="230" cy="87" r="10" class="s-ink"/><circle cx="230" cy="87" r="4" class="s-accent"/>
+              <text x="107" y="62" text-anchor="middle" class="t t-ink" style="font-size:13px;letter-spacing:0">10–15%</text>
+              <text x="107" y="48" text-anchor="middle" class="t" style="font-size:9px">Sustained</text>
+              <text x="230" y="62" text-anchor="middle" class="t t-ink" style="font-size:13px;letter-spacing:0">30%+</text>
+              <text x="230" y="48" text-anchor="middle" class="t" style="font-size:9px">Peak</text>
+              <g class="l-muted" stroke-width="1"><line x1="20" y1="116" x2="300" y2="116" class="l-border"/><line x1="20" y1="112" x2="20" y2="120"/><line x1="90" y1="112" x2="90" y2="120"/><line x1="160" y1="112" x2="160" y2="120"/><line x1="230" y1="112" x2="230" y2="120"/><line x1="300" y1="112" x2="300" y2="120"/></g>
+              <text x="20" y="138" text-anchor="middle" class="t" style="font-size:9px">0%</text><text x="90" y="138" text-anchor="middle" class="t" style="font-size:9px">10%</text><text x="160" y="138" text-anchor="middle" class="t" style="font-size:9px">20%</text><text x="230" y="138" text-anchor="middle" class="t" style="font-size:9px">30%</text><text x="300" y="138" text-anchor="middle" class="t" style="font-size:9px">40%</text>
+              <text x="20" y="164" class="t" style="font-size:9px">Click-through rate</text>
+            </svg>
+          </div>
+          <div class="proof-body">
+            <div class="proof-stat">30<em>%+</em></div>
+            <div class="proof-label">Peak click-through rate</div>
+            <p>Sustained 10–15% across niches, with peaks above 30%.</p>
+          </div>
+        </div>
+
+        <div class="proof">
+          <div class="proof-fig">
+            <svg viewBox="0 0 320 180" role="img" aria-label="Cycle diagram: research, package, test, scale, repeat">
+              <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l8 4-8 4z" fill="var(--accent)"/></marker></defs>
+              <g fill="none" class="l-accent" stroke-width="1.5" marker-end="url(#arr)">
+                <path d="M196 28 Q252 30 252 72"/>
+                <path d="M252 106 Q250 152 196 152"/>
+                <path d="M124 152 Q68 150 68 108"/>
+                <path d="M68 72 Q70 28 124 28"/>
+              </g>
+              <g>
+                <rect x="124" y="16" width="72" height="24" rx="12" class="s-ink"/><text x="160" y="32" text-anchor="middle" class="t t-bg" style="fill:var(--bg)">Research</text>
+                <rect x="216" y="78" width="72" height="24" rx="12" class="s-card l-ink" stroke-width="1"/><text x="252" y="94" text-anchor="middle" class="t t-ink">Package</text>
+                <rect x="124" y="140" width="72" height="24" rx="12" class="s-card l-ink" stroke-width="1"/><text x="160" y="156" text-anchor="middle" class="t t-ink">A/B Test</text>
+                <rect x="32" y="78" width="72" height="24" rx="12" class="s-accent"/><text x="68" y="94" text-anchor="middle" class="t" style="fill:#fff">Scale</text>
+              </g>
+              <text x="160" y="88" text-anchor="middle" class="t-serif t-ink" style="font-family:var(--serif);font-size:18px;font-style:italic;fill:var(--ink)">every video</text>
+              <text x="160" y="106" text-anchor="middle" class="t" style="font-size:8px">repeat what wins</text>
+            </svg>
+          </div>
+          <div class="proof-body">
+            <div class="proof-stat">Packaging <em>loop</em></div>
+            <div class="proof-label">How each video ships</div>
+            <p>Outlier research, thumbnail and title packaging, A/B testing, then scaling what wins.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="alt">
+    <div class="inner">
+      <p class="label">Experience</p>
+      <div class="exp">
+        <div class="exp-date">2023 – Present</div><div class="exp-rail"><i></i></div>
+        <div class="exp-body">
+          <div class="exp-role">YouTube Creative Strategist &amp; Thumbnail Lead</div>
+          <div class="exp-co">Multi-Client / Direct Clients</div>
+          <ul>
+            <li>Managed the full creative lifecycle across business, crypto, real estate, AI, health, gaming, and tech channels: content packaging, thumbnail strategy, title optimization, and SEO</li>
+            <li>Engineered thumbnail systems delivering sustained CTRs of 10–15%, with peak performance exceeding 30%, contributing to multiple videos crossing 1M+ views</li>
+            <li>Conducted outlier analysis using 1of10, VidIQ, and TubeBuddy to identify high-probability viral content patterns</li>
+            <li>Directed A/B testing frameworks and codified best practices into repeatable creative playbooks for designer teams</li>
+            <li>Built scalable creative ops using Airtable, Make.com, and Zapier to automate asset handoffs and client reporting</li>
+          </ul>
+        </div>
+        <div class="exp-date">2025 – Present</div><div class="exp-rail"><i></i></div>
+        <div class="exp-body">
+          <div class="exp-role">Senior Visual Designer &amp; AI Content Specialist</div>
+          <div class="exp-co">Freelance</div>
+          <ul>
+            <li>Designed YouTube thumbnails, logo systems, social media creatives, book covers, eBook layouts, and digital publications for international clients</li>
+            <li>Pioneered AI-powered production workflows integrating Midjourney, Leonardo AI, Flux, Ideogram, and Whisk with Adobe Photoshop pipelines</li>
+            <li>Developed prompt engineering frameworks for AI image generation, enabling rapid ideation and iteration cycles</li>
+            <li>Produced brand identity packages including logo suites, typography systems, and visual guidelines for startups and creator brands</li>
+          </ul>
+        </div>
+        <div class="exp-date">2023</div><div class="exp-rail"><i></i></div>
+        <div class="exp-body">
+          <div class="exp-role">YouTube Content Creator &amp; Video Producer</div>
+          <div class="exp-co">Independent Channel</div>
+          <ul>
+            <li>Produced end-to-end YouTube educational content on Python programming: scripting, recording, editing in Premiere Pro, thumbnail design, and channel SEO</li>
+            <li>Achieved 200K+ views on the channel's debut video through full-stack content strategy and packaging</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="inner about">
+      <div>
+        <p class="label" style="margin-bottom: 28px;">About</p>
+        <h2>Data-driven creativity with <em>mathematical</em> precision.</h2>
+        <p>I'm a Creative Strategist and YouTube Growth Specialist with a background in Mathematics, a combination that lets me approach creative work with both analytical rigor and genuine design instinct.</p>
+        <p>I've generated multiple 1M+ view videos, maintained 10–15% CTRs across diverse niches, led designer teams, and built creative operations systems from the ground up. I work across business, finance, real estate, gaming, AI, and technology channels.</p>
+        <p>Open to full-time remote roles, agencies, creator businesses, media companies, and AI startups. Available immediately.</p>
+        <div class="edu"><b>BS Mathematics</b><span>Polytechnic University of the Philippines</span></div>
+      </div>
+      <div>
+        <div class="plot">
+          <svg viewBox="0 0 400 190" role="img" aria-label="Plot of a rising curve with labelled axes for packaging quality and click-through rate">
+            <g class="l-border" stroke-width="1"><line x1="44" y1="20" x2="44" y2="156"/><line x1="44" y1="156" x2="380" y2="156"/></g>
+            <g class="l-border" stroke-width="1" stroke-dasharray="2 5"><line x1="44" y1="122" x2="380" y2="122"/><line x1="44" y1="88" x2="380" y2="88"/><line x1="44" y1="54" x2="380" y2="54"/></g>
+            <path d="M44 150 C120 148 170 140 215 112 S320 40 372 28 L372 156 L44 156 Z" class="s-soft"/>
+            <path d="M44 150 C120 148 170 140 215 112 S320 40 372 28" fill="none" class="l-accent" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="215" cy="112" r="4.5" class="s-card l-accent" stroke-width="2"/><circle cx="372" cy="28" r="5" class="s-accent"/>
+            <text x="380" y="176" text-anchor="end" class="t">Packaging quality</text>
+            <text x="14" y="20" class="t">CTR</text>
+            <text x="224" y="132" class="t-serif" style="font-family:var(--serif);font-style:italic;font-size:15px;fill:var(--ink)">f(x)</text>
+            <circle cx="66" cy="40" r="22" class="s-ink"/><text x="66" y="47" text-anchor="middle" style="font-family:var(--serif);font-style:italic;font-size:20px;fill:var(--bg)">JM</text>
+          </svg>
+        </div>
+        <div class="skills">
+          <div>YouTube Strategy</div><div>CTR Optimization</div><div>Thumbnail Design</div><div>Brand Identity</div>
+          <div>AI Workflow Dev</div><div>Prompt Engineering</div><div>Analytics &amp; Data</div><div>A/B Testing</div>
+          <div>Team Leadership</div><div>Creative Direction</div><div>Workflow Automation</div><div>eBook &amp; Publishing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <svg class="c-art" viewBox="0 0 520 520" aria-hidden="true"><circle cx="260" cy="260" r="80"/><circle cx="260" cy="260" r="140"/><circle cx="260" cy="260" r="200"/><circle cx="260" cy="260" r="256"/><circle cx="260" cy="260" r="6" style="fill:var(--accent);stroke:none"/></svg>
+    <div class="inner">
+      <p class="label">Contact</p>
+      <h2>Let's build something <em>great</em>.</h2>
+      <p class="c-sub">Open to remote roles, freelance projects, agencies, creator businesses, and AI startups.</p>
+      <div class="c-rows">
+        <div class="c-row"><a class="c-link" href="mailto:johnmarkva18@gmail.com" id="mail">johnmarkva18@gmail.com</a><button class="copy" type="button" data-copy="johnmarkva18@gmail.com">Copy</button></div>
+        <div class="c-row"><a class="c-link" href="tel:+639565973151" style="font-size:1.05rem">+63 956-597-3151</a><button class="copy" type="button" data-copy="+63 956-597-3151">Copy</button></div>
+      </div>
+      <p class="c-meta">Manila, Philippines &nbsp;·&nbsp; Available for Remote Roles</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 John Mark Juane</span>
+  <span>Strategy · Design · Growth</span>
+</footer>
+
+<script>
+(function () {
+  /* tools */
+  var tools = ['Adobe Photoshop','Adobe Lightroom','Midjourney','Leonardo AI','Flux','Ideogram','Whisk','ChatGPT','Claude','Gemini','VidIQ','TubeBuddy','1of10','YouTube Studio','Google Analytics','Airtable','Make.com','Zapier','Premiere Pro'];
+  document.getElementById('tools').innerHTML = tools.map(function (t) { return '<span class="tool">' + t + '</span>'; }).join('');
+
+  /* thumbnail art */
+  var f = function (n) { return n.toFixed(1); };
+  function rays(cx, cy, n, r, c) {
+    var o = '';
+    for (var i = 0; i < n; i++) {
+      var a = i / n * 6.2832, b = (i + .5) / n * 6.2832;
+      o += '<polygon points="' + cx + ',' + cy + ' ' + f(cx + r * Math.cos(a)) + ',' + f(cy + r * Math.sin(a)) + ' ' + f(cx + r * Math.cos(b)) + ',' + f(cy + r * Math.sin(b)) + '" fill="' + c + '"/>';
+    }
+    return o;
+  }
+  function star(cx, cy, ro, ri, c) {
+    var p = [];
+    for (var i = 0; i < 10; i++) { var r = i % 2 ? ri : ro, a = -1.5708 + i * .31416 * 2 / 2 * 1; a = -1.5708 + i * 0.6283 / 1 * .5 * 1; a = -1.5708 + i * 0.62832; p.push(f(cx + r * Math.cos(a)) + ',' + f(cy + r * Math.sin(a))); }
+    return '<polygon points="' + p.join(' ') + '" fill="' + c + '"/>';
+  }
+  var W = '#fff';
+  var M = {
+    entertainment: [
+      function () { return rays(236, 62, 18, 300, 'rgba(255,255,255,.2)') + '<circle cx="236" cy="62" r="40" fill="#fff3b0"/>' + star(236, 62, 28, 12, '#ff6b3d'); },
+      function () { var s = ''; [[40,30,'#fff3b0',20],[90,76,'#ffffff',-30],[150,24,'#7c3aed',40],[210,88,'#fff3b0',-15],[268,36,'#ffffff',25],[286,92,'#7c3aed',-40],[60,100,'#7c3aed',10]].forEach(function (c) { s += '<rect x="' + c[0] + '" y="' + c[1] + '" width="18" height="10" fill="' + c[2] + '" transform="rotate(' + c[3] + ' ' + (c[0] + 9) + ' ' + (c[1] + 5) + ')"/>'; }); return s + '<circle cx="160" cy="64" r="38" fill="#fff3b0"/>' + star(160, 64, 26, 11, '#ff6b3d'); }
+    ],
+    business: [
+      function () { var s = ''; [30,48,66,88,112].forEach(function (h, i) { s += '<rect x="' + (40 + i * 36) + '" y="' + (120 - h) + '" width="26" height="' + h + '" fill="' + (i === 4 ? '#ffd166' : 'rgba(255,255,255,.85)') + '"/>'; }); return s + '<polyline points="50,92 90,78 126,82 162,56 202,38" fill="none" stroke="#fff" stroke-width="3"/><circle cx="262" cy="52" r="30" fill="#ffd166"/><text x="262" y="63" text-anchor="middle" style="font:700 32px DM Sans,sans-serif" fill="#0b3b2e">$</text>'; },
+      function () { return '<circle cx="110" cy="70" r="42" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="18"/><circle cx="110" cy="70" r="42" fill="none" stroke="#ffd166" stroke-width="18" stroke-dasharray="170 264" transform="rotate(-90 110 70)"/><path d="M200 100 L240 60 L262 78 L296 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M276 30h20v20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>'; }
+    ],
+    tech: [
+      function () { var s = ''; for (var i = 0; i < 5; i++) { s += '<rect x="' + (112 + i * 20) + '" y="22" width="6" height="14" fill="#9fe8ff"/><rect x="' + (112 + i * 20) + '" y="100" width="6" height="14" fill="#9fe8ff"/><rect x="86" y="' + (44 + i * 14) + '" width="14" height="6" fill="#9fe8ff"/><rect x="226" y="' + (44 + i * 14) + '" width="14" height="6" fill="#9fe8ff"/>'; } return '<circle cx="163" cy="68" r="70" fill="rgba(159,232,255,.12)"/>' + s + '<rect x="100" y="36" width="126" height="64" rx="8" fill="#0a1a33" stroke="#9fe8ff" stroke-width="2"/><text x="163" y="78" text-anchor="middle" style="font:700 26px DM Sans,sans-serif" fill="#9fe8ff">AI</text>'; },
+      function () { var n = [[60,40],[60,96],[140,24],[140,68],[140,112],[230,50],[230,92]], s = ''; n.slice(0, 2).forEach(function (a) { n.slice(2, 5).forEach(function (b) { s += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="rgba(159,232,255,.45)" stroke-width="1.5"/>'; }); }); n.slice(2, 5).forEach(function (a) { n.slice(5).forEach(function (b) { s += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="rgba(159,232,255,.45)" stroke-width="1.5"/>'; }); }); n.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="9" fill="#0a1a33" stroke="#9fe8ff" stroke-width="2"/>'; }); return s + '<circle cx="280" cy="70" r="10" fill="#9fe8ff"/>'; }
+    ],
+    gaming: [
+      function () { return '<rect x="76" y="40" width="168" height="76" rx="38" fill="#120a2b" stroke="#ff4fd8" stroke-width="3"/><rect x="112" y="68" width="34" height="10" fill="#fff"/><rect x="124" y="56" width="10" height="34" fill="#fff"/><circle cx="196" cy="62" r="9" fill="#38f2c0"/><circle cx="214" cy="80" r="9" fill="#ffd166"/><circle cx="178" cy="80" r="9" fill="#ff4fd8"/>'; },
+      function () { return '<circle cx="160" cy="68" r="52" fill="none" stroke="#fff" stroke-width="3"/><circle cx="160" cy="68" r="32" fill="none" stroke="#ff4fd8" stroke-width="3"/><circle cx="160" cy="68" r="8" fill="#ffd166"/><path d="M160 4v36M160 96v36M96 68h36M188 68h36" stroke="#fff" stroke-width="3"/>'; }
+    ],
+    realestate: [
+      function () { return '<circle cx="250" cy="40" r="22" fill="#ffe08a"/><polygon points="64,70 160,14 256,70" fill="#1b4965"/><rect x="82" y="70" width="156" height="50" fill="#fff"/><rect x="146" y="86" width="28" height="34" fill="#ee6c4d"/><rect x="98" y="82" width="28" height="22" fill="#9fd3e6"/><rect x="194" y="82" width="28" height="22" fill="#9fd3e6"/>'; },
+      function () { var s = ''; [[30,70],[72,44],[114,86],[156,30],[198,60],[240,40]].forEach(function (b, i) { s += '<rect x="' + b[0] + '" y="' + b[1] + '" width="36" height="' + (124 - b[1]) + '" fill="' + (i % 2 ? '#1b4965' : '#fff') + '"/>'; for (var y = b[1] + 8; y < 112; y += 14) { s += '<rect x="' + (b[0] + 7) + '" y="' + y + '" width="6" height="6" fill="' + (i % 2 ? '#ffe08a' : '#9fd3e6') + '"/><rect x="' + (b[0] + 21) + '" y="' + y + '" width="6" height="6" fill="' + (i % 2 ? '#ffe08a' : '#9fd3e6') + '"/>'; } }); return s; }
+    ],
+    crypto: [
+      function () { var s = ''; [[40,70,34,22,'g'],[76,56,30,20,'g'],[112,64,24,22,'r'],[148,44,34,24,'g'],[184,30,36,26,'g'],[220,40,30,20,'r'],[256,18,40,26,'g']].forEach(function (c) { var col = c[4] === 'g' ? '#38f2a0' : '#ff5d6c'; s += '<line x1="' + (c[0] + 9) + '" y1="' + (c[1] - 12) + '" x2="' + (c[0] + 9) + '" y2="' + (c[1] + c[3] + 12) + '" stroke="' + col + '" stroke-width="2"/><rect x="' + c[0] + '" y="' + c[1] + '" width="18" height="' + c[3] + '" fill="' + col + '"/>'; }); return s; },
+      function () { return '<circle cx="160" cy="68" r="52" fill="#ffc93c"/><circle cx="160" cy="68" r="40" fill="none" stroke="#b4780a" stroke-width="3"/><text x="160" y="82" text-anchor="middle" style="font:700 42px DM Sans,sans-serif" fill="#b4780a">$</text><circle cx="64" cy="40" r="10" fill="#ffc93c"/><circle cx="264" cy="96" r="14" fill="#ffc93c"/><circle cx="252" cy="30" r="6" fill="#fff"/>'; }
+    ],
+    '2d': [
+      function () { return '<circle cx="86" cy="64" r="40" fill="#ffd166"/><polygon points="150,112 202,24 254,112" fill="#ef476f"/><rect x="214" y="30" width="56" height="56" rx="10" fill="#fff" transform="rotate(14 242 58)"/>'; },
+      function () { return '<path d="M0 90 Q50 40 100 80 T200 70 T320 60 L320 130 L0 130 Z" fill="#ffd166"/><circle cx="90" cy="46" r="26" fill="#fff"/><circle cx="240" cy="40" r="34" fill="#ef476f"/><path d="M40 112 q20 -22 40 0 t40 0 t40 0" fill="none" stroke="#fff" stroke-width="4"/>'; }
+    ],
+    documentary: [
+      function () { var s = '<g transform="rotate(-6 160 70)"><rect x="30" y="34" width="260" height="70" fill="#111"/>'; for (var i = 0; i < 12; i++) { s += '<rect x="' + (38 + i * 21) + '" y="38" width="10" height="8" fill="#e9e1d0"/><rect x="' + (38 + i * 21) + '" y="92" width="10" height="8" fill="#e9e1d0"/>'; } return s + '<rect x="42" y="52" width="60" height="38" fill="#6b5b45"/><rect x="110" y="52" width="60" height="38" fill="#8a7458"/><rect x="178" y="52" width="60" height="38" fill="#b59b73"/></g>'; },
+      function () { var s = ''; for (var i = 1; i < 6; i++) s += '<ellipse cx="160" cy="70" rx="' + (i * 30) + '" ry="' + (i * 12) + '" fill="none" stroke="rgba(233,225,208,' + (.9 - i * .13) + ')" stroke-width="1.5"/>'; return s + '<path d="M160 30c-14 0-22 10-22 22 0 16 22 38 22 38s22-22 22-38c0-12-8-22-22-22z" fill="#e9e1d0"/><circle cx="160" cy="52" r="8" fill="#3a3226"/>'; }
+    ],
+    mountainclimbing: [
+      function () { return '<circle cx="256" cy="34" r="20" fill="#ffe9a8"/><polygon points="0,124 80,40 140,100 200,22 320,124" fill="#e8eef5"/><polygon points="200,22 176,56 198,48 214,62 232,50" fill="#fff"/><polygon points="0,124 80,40 112,72 70,124" fill="#9bb4cf"/><polygon points="140,124 200,70 260,124" fill="#6d8db0"/>'; },
+      function () { return '<polygon points="30,124 160,16 290,124" fill="#e8eef5"/><polygon points="160,16 124,52 152,44 172,60 200,46" fill="#fff"/><polygon points="160,124 160,16 290,124" fill="#b9cbe0"/><line x1="160" y1="16" x2="160" y2="-2" stroke="#fff" stroke-width="2"/><polygon points="160,0 182,6 160,12" fill="#ff5d3b"/>'; }
+    ],
+    comedy: [
+      function () { return '<circle cx="160" cy="66" r="52" fill="#ffd23f"/><circle cx="140" cy="54" r="7" fill="#2b2118"/><circle cx="180" cy="54" r="7" fill="#2b2118"/><path d="M128 74 Q160 112 192 74 Z" fill="#2b2118"/><path d="M96 38l-14-14M224 38l14-14M88 70h-18M232 70h18" stroke="#fff" stroke-width="4" stroke-linecap="round"/>'; },
+      function () { return '<path d="M60 26h150a14 14 0 0 1 14 14v46a14 14 0 0 1-14 14h-90l-28 20v-20h-32a14 14 0 0 1-14-14V40a14 14 0 0 1 14-14z" fill="#fff"/><text x="136" y="76" text-anchor="middle" style="font:700 34px DM Sans,sans-serif" fill="#2b2118">HA!</text><circle cx="262" cy="52" r="26" fill="#ffd23f"/><circle cx="254" cy="46" r="3.5" fill="#2b2118"/><circle cx="270" cy="46" r="3.5" fill="#2b2118"/><path d="M251 58 Q262 70 273 58" fill="none" stroke="#2b2118" stroke-width="3" stroke-linecap="round"/>'; }
+    ]
+  };
+  var cats = [
+    { id: 'entertainment', name: 'Entertainment', g: ['#ff6b3d', '#7c3aed'], t: ['WAIT FOR IT', 'NO WAY!'] },
+    { id: 'business', name: 'Business & Finance', g: ['#0b3b2e', '#1f8a5b'], t: ['TO $1M', 'THE REAL COST'] },
+    { id: 'tech', name: 'Tech & AI', g: ['#0a1a33', '#1d4ed8'], t: ['AI CHANGES IT', 'NEW CHIP?'] },
+    { id: 'gaming', name: 'Gaming', g: ['#1a0b3b', '#c026d3'], t: ['LEVEL UP', 'ONE SHOT'] },
+    { id: 'realestate', name: 'Real Estate', g: ['#243b53', '#4f7cac'], t: ['SOLD FAST', 'CITY LIVING'] },
+    { id: 'crypto', name: 'Crypto', g: ['#10131c', '#3b2a8f'], t: ['BULL RUN?', 'BUY OR WAIT'] },
+    { id: '2d', name: '2D', g: ['#3a86ff', '#8338ec'], t: ['DRAWN IN 2D', 'FLAT & BOLD'] },
+    { id: 'documentary', name: 'Documentary', g: ['#2b2620', '#6b5b45'], t: ['THE UNTOLD STORY', 'WHAT HAPPENED?'] },
+    { id: 'mountainclimbing', name: 'Mountain Climbing', g: ['#12395f', '#4aa3df'], t: ['SUMMIT DAY', 'THE LAST 500M'] },
+    { id: 'comedy', name: 'Comedy', g: ['#f77f00', '#d62828'], t: ['I CAN\'T STOP', 'AWKWARD...'] }
+  ];
+  function thumb(c, v) {
+    var id = 'g' + c.id + v, t = c.t[v], size = Math.min(30, Math.floor(288 / (t.length * .64)));
+    var g = v ? [c.g[1], c.g[0]] : c.g;
+    return '<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Sample ' + c.name.replace('&', 'and') + ' thumbnail: ' + t.replace(/&/g, 'and') + '">' +
+      '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + g[0] + '"/><stop offset="1" stop-color="' + g[1] + '"/></linearGradient></defs>' +
+      '<rect width="320" height="180" fill="url(#' + id + ')"/>' + M[c.id][v]() +
+      '<text x="16" y="164" style="font-family:DM Sans,sans-serif;font-weight:700;font-size:' + size + 'px" fill="#fff" stroke="rgba(0,0,0,.55)" stroke-width="5" paint-order="stroke" stroke-linejoin="round">' + t.replace(/&/g, '&amp;') + '</text></svg>';
+  }
+  var items = [];
+  cats.forEach(function (c) { for (var v = 0; v < 2; v++) items.push({ cat: c, v: v, html: thumb(c, v) }); });
+  var grid = document.getElementById('gallery');
+  grid.innerHTML = items.map(function (it) {
+    return '<div class="g-item" data-cat="' + it.cat.id + '"><div class="g-thumb">' + it.html + '</div><div class="g-title">' + it.cat.t[it.v].replace(/&/g, '&amp;') + '</div><div class="g-cat">' + it.cat.name.replace(/&/g, '&amp;') + '</div></div>';
+  }).join('');
+  var fbar = document.getElementById('filters');
+  fbar.innerHTML = '<button class="filter" type="button" data-f="all" aria-pressed="true">All</button>' + cats.map(function (c) { return '<button class="filter" type="button" data-f="' + c.id + '" aria-pressed="false">' + c.name.replace(/&/g, '&amp;') + '</button>'; }).join('');
+  fbar.addEventListener('click', function (e) {
+    var b = e.target.closest('.filter'); if (!b) return;
+    fbar.querySelectorAll('.filter').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    var v = b.getAttribute('data-f');
+    grid.querySelectorAll('.g-item').forEach(function (el) { el.hidden = !(v === 'all' || el.getAttribute('data-cat') === v); });
+  });
+
+  /* copy buttons */
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var txt = btn.getAttribute('data-copy'), old = btn.textContent;
+      var ok = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = old; }, 1600); };
+      var fail = function () { btn.textContent = 'Select & copy'; setTimeout(function () { btn.textContent = old; }, 1800); };
+      try { navigator.clipboard.writeText(txt).then(ok, fail); } catch (e) { fail(); }
+    });
+  });
+})();
+</script>
+
+</body></html>
